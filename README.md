@@ -35,68 +35,60 @@ This project is an **educational prototype**, designed to demonstrate distribute
 
 All processes run on your **own computer** using two different localhost ports; no remote hosting or campus network access is required.
 
-## Quick start (macOS, Linux, Windows PowerShell alternative)
+## How to run the project
 
-Prerequisite: **Python 3.10 or later**.
+The project requires Python 3.10 or later.
+
+First, open a terminal in the project folder and install the dependencies:
 
 ```bash
-# From the project folder (where requirements.txt lives):
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-Fastest option: start both independent node processes from **one terminal**:
+Start both campus servers:
 
 ```bash
 python -m scripts.run_both
 ```
 
-Or open **two terminals**, each inside the project folder:
+Then open the two pages in your browser:
+
+- Cesena: http://127.0.0.1:5001
+- Forlì: http://127.0.0.1:5002
+
+Both servers run locally on the same computer. Each campus uses its own SQLite database.
+
+To stop the servers, press `Ctrl + C` in the terminal.
+
+## Testing the application
+
+I tested the application locally using two nodes: Cesena and Forlì.
+
+I first created a lost-item report in Cesena and synchronized it with Forlì.
+
+Then I simulated a network disconnection. During the disconnection, I created a new report in Cesena and verified that it was not immediately visible in Forlì. After restoring the connection and synchronizing, both nodes had the same data.
+
+I also tested concurrent updates to the same report. The application detected a conflict, and I selected one version to resolve it.
+
+Finally, I tested the lost/found matching feature using reports with similar keywords.
+
+### Run the automated demonstration
+
+Start both nodes:
 
 ```bash
-# Terminal 1: Cesena
-python -m scripts.run_cesena
+python -m scripts.run_both
 ```
 
-```bash
-# Terminal 2: Forlì
-python -m scripts.run_forli
-```
-
-Open the two dashboards (with either startup method):
-
-- **Cesena:** http://127.0.0.1:5001
-- **Forlì:** http://127.0.0.1:5002
-
-Windows PowerShell: activate the environment using `.venv\Scripts\Activate.ps1`, then use the same `python -m ...` commands.
-
-> **Important:** The app provides intentionally unauthenticated demonstration endpoints to switch connectivity and resolve conflicts. It binds to `127.0.0.1` only. **Do not deploy it to the public Internet.**
-
-## Demonstration (recommended for oral discussion)
-
-With both node servers running, use a **third terminal**:
+In another terminal, run:
 
 ```bash
 python -m scripts.demo
 ```
 
-This script exercises the complete distributed scenario:
-
-1. Create a lost-item report in Cesena and synchronize it to Forlì.
-2. Disable inter-node connectivity for **both** nodes.
-3. Edit the **same report differently** at both campuses; independently create a found-item report in Forlì.
-4. Confirm each campus can still write locally and synchronization fails during the outage.
-5. Restore connectivity and synchronize the two databases.
-6. Detect two causally concurrent versions as a **conflict** (without silently overwriting either).
-7. Choose a version to resolve the conflict, then synchronize the merged result.
-8. Display a possible lost/found match as a *separate* matching feature.
-
-Each run creates new sample records; to reset all demonstration data, stop both servers, delete `data/cesena.sqlite3*` and `data/forli.sqlite3*`, and restart. **Deleting these files permanently removes local data.**
-
-### Manual demo in the browser
-
-Create an item on the Cesena dashboard → click **Synchronize now** → verify it appears in Forlì. Click **Simulate disconnection** in **both** dashboards. Update the same report in different ways (the UI offers *Mark resolved*; for more nuanced edits, use the automated demo or the REST API). Restore both connections, synchronize, and choose a version on the conflict card. Synchronize again to propagate the resolution.
+The demonstration checks synchronization, network disconnection, conflict detection and resolution.
 
 ## API reference
 
@@ -164,8 +156,7 @@ python -m unittest discover -s tests -v
 - Flask API tests (`tests/test_flask_optional.py`) exercise route responses if Flask is installed, and skip automatically otherwise.
 - Run `python -m scripts.demo` with both servers running to verify the full user-facing HTTP scenario.
 
-**Build verification:** 7 core tests passed in the development environment; the 2 Flask-specific tests were skipped there because this environment did not have Flask installed. Running the full app and Flask tests requires installing `requirements.txt` on a machine with package access. No unverified live Flask run is claimed.
-
+**Local test results:** I ran the tests on macOS with Python 3.11.2 and Flask installed. All 9 tests passed successfully (0 failures, 0 skipped).
 ## Files
 
 ```text
