@@ -1,0 +1,21 @@
+Local verification record — 2026-11-06
+Command: python -m unittest discover -s tests -v
+
+test_conflicts_are_different_from_possible_matches (test_core.CoreTests.test_conflicts_are_different_from_possible_matches) ... ok
+test_disconnection_conflict_resolution_convergence (test_core.CoreTests.test_disconnection_conflict_resolution_convergence) ... ok
+test_local_crud_and_validation (test_core.CoreTests.test_local_crud_and_validation) ... ok
+test_peer_replicates_both_directions_and_is_idempotent (test_core.CoreTests.test_peer_replicates_both_directions_and_is_idempotent) ... ok
+test_persistence_survives_store_reopening (test_core.CoreTests.test_persistence_survives_store_reopening) ... ok
+test_replication_rejects_invalid_versions_atomically (test_core.CoreTests.test_replication_rejects_invalid_versions_atomically) ... ok
+test_vector_clocks (test_core.CoreTests.test_vector_clocks) ... ok
+test_create_list_modify_and_health (test_flask_optional.FlaskAPITests.test_create_list_modify_and_health) ... skipped 'Flask not installed in this environment'
+test_partition_blocks_sync_but_not_local_write (test_flask_optional.FlaskAPITests.test_partition_blocks_sync_but_not_local_write) ... skipped 'Flask not installed in this environment'
+
+----------------------------------------------------------------------
+Ran 9 tests in 3.839s
+
+OK (skipped=2)
+
+Python syntax check: python -m compileall -q campus scripts tests (passed)
+Flask was unavailable in the build environment; 2 Flask-only tests skipped.
+Real Flask-server execution and browser validation remain to be done after installing requirements.txt.

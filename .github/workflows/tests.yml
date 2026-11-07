@@ -1,0 +1,40 @@
+name: Python project checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run automated tests
+        run: python -m unittest discover -s tests -v
+      - name: Start two nodes and run complete HTTP demo
+        run: |
+          python -m scripts.run_cesena > /tmp/cesena.log 2>&1 &
+          pid_a=$!
+          python -m scripts.run_forli > /tmp/forli.log 2>&1 &
+          pid_b=$!
+          trap 'kill "$pid_a" "$pid_b" 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import time
+          from urllib.request import urlopen
+          for _ in range(30):
+              try:
+                  for port in (5001, 5002):
+                      with urlopen(f'http://127.0.0.1:{port}/api/health', timeout=1) as r:
+                          assert r.status == 200
+                  break
+              except Exception:
+                  time.sleep(0.3)
+          else:
+              raise SystemExit('Nodes did not start')
+          PY
+          python -m scripts.demo || { cat /tmp/cesena.log /tmp/forli.log; exit 1; }

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ campus }} | Campus Lost &amp; Found</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container top-inner">
+      <div class="brand"><span class="brand-icon">↗</span><div><strong>Campus Lost &amp; Found</strong><small>Distributed systems prototype</small></div></div>
+      <div class="node-badge">Node <strong>{{ campus }}</strong> · <span id="connection-label">Checking…</span></div>
+    </div>
+  </header>
+  <main class="container">
+    <div class="intro">
+      <div><p class="eyebrow">INDEPENDENT CAMPUS NODE · {{ node_id | upper }}</p><h1>{{ campus }} dashboard</h1>
+        <p>Report lost and found objects locally. Keep working offline, then synchronize with the other campus.</p>
+      </div>
+      <div class="actions">
+        <button id="sync-button" class="primary">↻ Synchronize now</button>
+        <button id="network-button" class="outline">Simulate disconnection</button>
+      </div>
+    </div>
+    <div id="notice" role="status" aria-live="polite" class="notice hidden"></div>
+    <section class="stats" aria-label="Node statistics">
+      <div class="stat"><span>Reports</span><strong id="report-count">—</strong></div>
+      <div class="stat"><span>Unresolved conflicts</span><strong id="conflict-count">—</strong></div>
+      <div class="stat"><span>Local versions stored</span><strong id="version-count">—</strong></div>
+      <div class="stat"><span>Peer</span><strong id="peer-name">Forlì / Cesena</strong></div>
+    </section>
+    <div class="main-grid">
+      <section class="panel add-panel" aria-labelledby="new-heading">
+        <div class="panel-title"><div><p class="eyebrow">01 / CREATE</p><h2 id="new-heading">New report</h2></div></div>
+        <form id="new-form">
+          <label for="kind">Report type</label>
+          <select id="kind" name="kind"><option value="LOST">Lost an item</option><option value="FOUND">Found an item</option></select>
+          <label for="title">Title</label>
+          <input id="title" name="title" maxlength="120" required placeholder="e.g. Black MacBook charger">
+          <label for="category">Category</label>
+          <select id="category" name="category"><option value="electronics">Electronics</option><option value="keys">Keys</option><option value="documents">Documents</option><option value="clothing">Clothing</option><option value="bags">Bags</option><option value="other">Other</option></select>
+          <label for="description">Details (optional)</label>
+          <textarea id="description" name="description" rows="4" maxlength="1000" placeholder="Where and when did you last see it?"></textarea>
+          <button class="primary full" type="submit">Save locally</button>
+          <p class="hint">Records are saved here even when the connection to the other campus is disabled.</p>
+        </form>
+      </section>
+      <div class="right-column">
+        <section class="panel" aria-labelledby="reports-heading">
+          <div class="panel-title"><div><p class="eyebrow">02 / INVENTORY</p><h2 id="reports-heading">Campus reports</h2></div>
+            <input id="search" class="search" aria-label="Search reports" placeholder="Search reports…">
+          </div>
+          <div id="reports" class="reports"><p class="muted">Loading reports…</p></div>
+        </section>
+        <section class="panel" aria-labelledby="matches-heading">
+          <div class="panel-title"><div><p class="eyebrow">03 / SUGGESTIONS</p><h2 id="matches-heading">Possible matches</h2></div></div>
+          <p class="hint">A suggestion links separate lost and found reports. It is not a version conflict.</p>
+          <div id="matches"></div>
+        </section>
+      </div>
+    </div>
+    <footer>Course prototype · Flask · SQLite · REST/JSON · vector-clock conflict detection · Localhost demo only</footer>
+  </main>
+</body>
+</html>

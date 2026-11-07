@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.DS_Store
+.idea/
+.vscode/
+# Local databases may contain personal data and should not be committed.
+data/*.sqlite3
+data/*.sqlite3-shm
+data/*.sqlite3-wal
+*.log
